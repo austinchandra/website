@@ -1,7 +1,5 @@
 ---
 const pathname = Astro.url.pathname;
-const segments = pathname.split("/").filter(Boolean);
-const title = segments[0] === "writings" && segments[1] ? segments[1].replace(/\.md$/, '').replace(/-/g, ' ') : null;
 
 const links = [
   { label: "Home", href: "/" },
@@ -16,7 +14,7 @@ const links = [
         {link.label}
       </a>
     ))}
-    {title && <span class="title">— {title}</span>}
+
   </div>
 </header>
 
@@ -43,9 +41,4 @@ const links = [
     text-decoration: underline;
   }
 
-  .title {
-    font-size: 21px;
-    font-weight: 300;
-    margin-left: 24px;
-  }
 </style>
