@@ -1,0 +1,34 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const writings = await getCollection('writings');
+---
+
+<Layout>
+  <ul>
+    {writings.map((writing) => (
+      <li>
+        <a href={`/writings/${writing.id}`}>— {writing.data.title}</a>
+      </li>
+    ))}
+  </ul>
+</Layout>
+
+<style>
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  a {
+    font-size: 19px;
+    font-weight: 400;
+    text-decoration: none;
+    color: inherit;
+  }
+</style>

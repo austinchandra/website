@@ -1,0 +1,36 @@
+---
+const pathname = Astro.url.pathname;
+
+const links = [
+  { label: "Home", href: "/" },
+  { label: "Writings", href: "/writings" },
+];
+---
+
+<header>
+  {links.map((link) => (
+    <a href={link.href} class={pathname === link.href ? "active" : ""}>
+      {link.label}
+    </a>
+  ))}
+</header>
+
+<style>
+  header {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  a {
+    font-size: 24px;
+    font-weight: 500;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  a.active {
+    text-decoration: underline;
+  }
+</style>

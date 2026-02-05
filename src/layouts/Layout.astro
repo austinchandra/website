@@ -1,0 +1,64 @@
+---
+import Header from '../components/Header.astro';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>AC</title>
+    <style>
+      body {
+        font-family: "Helvetica Neue", Arial, sans-serif;
+        font-size: 19px;
+        background-color: #fdfdfd;
+        color: #080808;
+      }
+
+      .header-spacer {
+        margin-bottom: 40px;
+      }
+
+      /* Top : Left : Right in Golden Ratio */
+      /* Left : Width in Golden Ratio^3 */
+      main {
+        margin-top: 6.53vw;
+        margin-left: 10.56vw;
+        margin-right: 17.09vw;
+        width: 72.37vw;
+      }
+
+      /* Top : Left : Right in Golden Ratio */
+      /* Left : Width in Golden Ratio^2 */
+      @media (min-width: 768px) {
+        main {
+          margin-top: 9.02vw;
+          margin-left: 14.59vw;
+          margin-right: 23.61vw;
+          width: 61.81vw;
+        }
+      }
+
+      /* Top : Left : Right : Width in Golden Ratio */
+      @media (min-width: 1024px) {
+        main {
+          margin-top: 11.80vw;
+          margin-left: 19.10vw;
+          margin-right: 30.90vw;
+          width: 50.00vw;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="header-spacer">
+        <Header />
+      </div>
+      <slot />
+    </main>
+  </body>
+</html>
