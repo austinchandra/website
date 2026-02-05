@@ -1,5 +1,5 @@
 ---
-const pathname = Astro.url.pathname;
+const pathname = Astro.url.pathname === '/' ? '/' : Astro.url.pathname.replace(/\/$/, '');
 
 const links = [
   { label: "Home", href: "/" },
