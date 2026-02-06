@@ -1,8 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import HomeContent from '../content/home.md';
+
+const description = (await import('../content/description.md')).rawContent().trim();
 ---
 
-<Layout>
+<Layout title="Home" description={description}>
   <HomeContent />
 </Layout>

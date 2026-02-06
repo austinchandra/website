@@ -12,9 +12,15 @@ export async function getStaticPaths() {
 
 const { writing } = Astro.props;
 const { Content } = await writing.render();
+const limit = 200;
+// Convert consecutive newlines to a single space.
+const text = writing.body.replace(/\n+/g, ' ').trim();
+const description = text.length > limit
+  ? text.slice(0, text.lastIndexOf(' ', limit)) + '...'
+  : text;
 ---
 
-<Layout>
+<Layout title={writing.data.title} description={description}>
   <h2>{writing.data.title}</h2>
   <Content />
 </Layout>

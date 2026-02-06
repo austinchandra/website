@@ -2,12 +2,17 @@
 import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
+const limit = 5;
 const writings = (await getCollection('writings')).sort(
   (a, b) => b.data.index - a.data.index
 );
+const description = writings
+  .slice(0, limit)
+  .map((w) => w.data.title)
+  .join(', ') + (writings.length > limit ? '...' : '');
 ---
 
-<Layout>
+<Layout title="Writings" description={description}>
   <ul>
     {writings.map((writing) => (
       <li>
