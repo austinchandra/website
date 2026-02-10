@@ -13,12 +13,17 @@ const { title = "AC", description } = Astro.props;
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
     <style>
+      :root {
+        --color-bg: #fdfdfd;
+        --color-text: #080808;
+      }
+
       body {
         font-family: "Helvetica Neue", Arial, sans-serif;
         font-size: 17px;
         line-height: 1.5;
-        background-color: #fdfdfd;
-        color: #080808;
+        background-color: var(--color-bg);
+        color: var(--color-text);
       }
 
       .header-spacer {
