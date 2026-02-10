@@ -1,0 +1,116 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { bases, products } from '../../data/products';
+
+export function getStaticPaths() {
+  return products.map((product) => ({
+    params: { slug: product.slug },
+    props: { product },
+  }));
+}
+
+const { product } = Astro.props;
+const base = bases[product.base];
+---
+
+<Layout title={product.title} description={`${product.title} — ${base.name}`}>
+  <div class="product-container">
+    <div class="product-image"></div>
+    <div class="product-info">
+      <h2>{product.title}</h2>
+      <p>{base.name} — <i>{base.price}</i></p>
+      <p class="product-description">{product.description}</p>
+      <div class="product-controls">
+        <button disabled>1</button>
+        <span>in</span>
+        <button disabled>M</button>
+      </div>
+      <button class="add-button" disabled>Add (Preview)</button>
+      <p class="model-info">The model is a slim 5'8" and wears a M.</p>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .product-container {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+
+  .product-image {
+    width: 72.37vw;
+    height: 117.68vw;
+    background: #eee;
+  }
+
+  @media (min-width: 768px) {
+    .product-image {
+      width: 38.20vw;
+      height: 61.81vw;
+    }
+  }
+
+  @media (min-width: 1536px) {
+    .product-container {
+      flex-direction: row;
+      gap: 7.29vw;
+    }
+
+    .product-image {
+      width: 19.09vw;
+      height: 30.89vw;
+    }
+  }
+
+  .product-info h2 {
+    margin-top: 0;
+  }
+
+  .product-description {
+    margin-top: 24px;
+    margin-bottom: 48px;
+    white-space: pre-line;
+  }
+
+  .product-controls {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+  }
+
+  .product-controls button {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  .product-controls button:disabled {
+    color: #ccc;
+    cursor: default;
+  }
+
+  .add-button {
+    margin-top: 24px;
+    background: var(--color-text);
+    color: var(--color-bg);
+    border: none;
+    border-radius: 4px;
+    padding: 4px 18px;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .add-button:disabled {
+    background: #ccc;
+    cursor: default;
+  }
+
+  .model-info {
+    margin-top: 48px;
+  }
+</style>

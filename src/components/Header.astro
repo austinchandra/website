@@ -4,18 +4,16 @@ const pathname = Astro.url.pathname === '/' ? '/' : Astro.url.pathname.replace(/
 const links = [
   { label: "Home", href: "/" },
   { label: "Writings", href: "/writings" },
+  { label: "Design", href: "/design" },
 ];
 ---
 
 <header>
-  <div class="nav">
-    {links.map((link) => (
-      <a href={link.href} class={pathname === link.href ? "active" : ""}>
-        {link.label}
-      </a>
-    ))}
-
-  </div>
+  {links.map((link) => (
+    <a href={link.href} class={pathname === link.href ? "active" : ""}>
+      {link.label}
+    </a>
+  ))}
 </header>
 
 <style>
@@ -23,10 +21,6 @@ const links = [
     height: 64px;
     display: flex;
     align-items: center;
-  }
-
-  .nav {
-    display: flex;
     gap: 24px;
   }
 
