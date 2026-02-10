@@ -1,15 +1,23 @@
 ---
+import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import Button from '../components/Button.astro';
 import ProductControls from '../components/ProductControls.astro';
 import ProductText from '../components/ProductText.astro';
-import { bases, products } from '../data/products';
+import { bases, products, getPrice } from '../data/products';
+
+const showcaseImages = import.meta.glob<{ default: ImageMetadata }>('../assets/designs/showcase/*.jpeg', { eager: true });
 
 // For now, hardcoded cart items (quantity, size, product slug)
 const cartItems = [
-  { slug: "filler-1", quantity: 1, size: "M" },
-  { slug: "filler-2", quantity: 2, size: "L" },
+  { slug: "square-1", quantity: 1, size: "M" },
+  { slug: "circle-2", quantity: 2, size: "L" },
 ];
+
+const cartTotal = `$${cartItems.reduce((sum, item) => {
+  const product = products.find((p) => p.slug === item.slug);
+  return sum + getPrice(product.base, item.quantity);
+}, 0)}`;
 ---
 
 <Layout title="Cart" description="Let these pieces serve to guide you to higher truths and places unexplored!">
@@ -17,27 +25,44 @@ const cartItems = [
     {cartItems.map((item) => {
       const product = products.find((p) => p.slug === item.slug);
       const base = bases[product.base];
+      const totalPrice = `$${getPrice(product.base, item.quantity)}`;
       return (
         <div class="cart-item">
-          <div class="item-image"></div>
+          <a href={`/designs/${item.slug}`}>
+            <Image src={showcaseImages[`../assets/designs/showcase/${item.slug}.jpeg`]?.default} alt={product.title} class="item-image" />
+          </a>
           <div class="item-info">
-            <ProductText class="item-text" title={product.title} baseName={base.name} price={base.price} />
+            <ProductText class="item-text" title={product.title} baseName={base.name} price={totalPrice} />
             <div class="item-controls">
-              <ProductControls quantity={item.quantity} size={item.size} />
+              <ProductControls quantity={item.quantity} size={item.size} showRemove />
             </div>
           </div>
         </div>
       );
     })}
-    <Button class="checkout-button">Checkout</Button>
+    <div class="cart-footer">
+      <p class="cart-total"><strong>Total</strong> — <i>{cartTotal}</i></p>
+      <Button class="checkout-button">Checkout</Button>
+    </div>
   </div>
 </Layout>
 
 <style>
+  /* Apply Inverse Golden Ratio Squared to Showcase.
+   * Width : Right Margin : Bottom Margin in the Golden Ratio.
+   * Final Separator is Right Margin.
+   * Checkout is Showcase Size. */
+  :root {
+    --cart-base: 17.09vw;
+    --cart-margin: calc(var(--cart-base) / var(--phi));
+    --cart-gap: calc(var(--cart-base) / var(--phi) / var(--phi));
+    --cart-checkout: calc(var(--cart-base) * var(--phi) * var(--phi));
+  }
+
   .cart-items {
     display: flex;
     flex-direction: column;
-    gap: 1.72vw;
+    gap: var(--cart-gap);
   }
 
   .cart-item {
@@ -46,9 +71,9 @@ const cartItems = [
   }
 
   .item-image {
-    width: 4.51vw;
-    height: 4.51vw;
-    margin-right: 2.78vw;
+    width: var(--cart-base);
+    height: var(--cart-base);
+    margin-right: var(--cart-margin);
     background: #eee;
   }
 
@@ -56,7 +81,30 @@ const cartItems = [
     margin-top: 24px;
   }
 
+  .cart-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: calc(var(--cart-margin) - var(--cart-gap));
+  }
+
+  .cart-total {
+    margin: 0;
+  }
+
   :global(.checkout-button) {
-    width: 11.81vw;
+    width: var(--cart-checkout);
+  }
+
+  @media (min-width: 768px) {
+    :root { --cart-base: 9.02vw; }
+  }
+
+  @media (min-width: 1024px) {
+    :root { --cart-base: 7.29vw; }
+  }
+
+  @media (min-width: 1536px) {
+    :root { --cart-base: 4.51vw; }
   }
 </style>

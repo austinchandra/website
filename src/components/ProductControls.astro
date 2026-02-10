@@ -1,11 +1,16 @@
 ---
-const { quantity, size } = Astro.props;
+const { quantity, size, showRemove } = Astro.props;
 ---
 
 <div class="product-controls">
-  <button>{quantity}</button>
+  <select value={quantity}>
+    {showRemove && <option value="0">0</option>}
+    {[1, 2, 3, 4, 5].map((n) => <option value={n} selected={n === quantity}>{n}</option>)}
+  </select>
   <span>x</span>
-  <button>{size}</button>
+  <select value={size}>
+    {["S", "M", "L", "XL", "2XL"].map((s) => <option value={s} selected={s === size}>{s}</option>)}
+  </select>
 </div>
 
 <style>
@@ -13,16 +18,23 @@ const { quantity, size } = Astro.props;
     display: flex;
     flex-direction: row;
     gap: 12px;
+    align-items: center;
   }
 
-  .product-controls button {
+  .product-controls select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
     background: none;
     border: none;
-    padding: 0;
+    border-radius: 0;
+    padding: 8px 12px;
+    margin: -8px -12px;
     font: inherit;
     font-weight: 500;
     color: inherit;
     cursor: pointer;
     text-decoration: underline;
+    outline: none;
   }
 </style>
