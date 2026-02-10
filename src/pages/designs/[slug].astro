@@ -14,12 +14,13 @@ export function getStaticPaths() {
 
 const { product } = Astro.props;
 const base = bases[product.base];
-const { default: productImage } = await import(`../../assets/designs/product/${product.slug}.jpeg`);
+// Load all images using static path and cache across page loads.
+const images = import.meta.glob<{ default: ImageMetadata }>('../../assets/designs/product/*.jpeg', { eager: true });
 ---
 
 <Layout title={product.title} description={`${product.title} — ${base.name}`}>
   <div class="product-container">
-    <Image src={productImage} alt={product.title} class="product-image" />
+    <Image src={images[`../../assets/designs/product/${product.slug}.jpeg`]?.default} alt={product.title} class="product-image" />
     <div class="product-info">
       <h2>{product.title}</h2>
       <p>{base.name} — <i>{base.price}</i></p>
