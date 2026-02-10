@@ -1,9 +1,9 @@
 ---
-const { paddingX = 12, href, class: className } = Astro.props;
+const { paddingX = 12, href, disabled, class: className } = Astro.props;
 const Element = href ? 'a' : 'button';
 ---
 
-<Element href={href} class:list={["button", className]} style={`padding: 4px ${paddingX}px;`}>
+<Element href={disabled ? undefined : href} disabled={disabled} class:list={["button", className, { disabled }]} style={`padding: 4px ${paddingX}px;`}>
   <slot />
 </Element>
 
@@ -16,5 +16,10 @@ const Element = href ? 'a' : 'button';
     font: inherit;
     cursor: pointer;
     text-decoration: none;
+  }
+
+  .button.disabled {
+    background: var(--color-disabled);
+    cursor: default;
   }
 </style>
