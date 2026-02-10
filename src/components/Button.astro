@@ -1,0 +1,20 @@
+---
+const { paddingX = 12, href, class: className } = Astro.props;
+const Element = href ? 'a' : 'button';
+---
+
+<Element href={href} class:list={["button", className]} style={`padding: 4px ${paddingX}px;`}>
+  <slot />
+</Element>
+
+<style>
+  .button {
+    background: var(--color-text);
+    color: var(--color-bg);
+    border: none;
+    border-radius: 4px;
+    font: inherit;
+    cursor: pointer;
+    text-decoration: none;
+  }
+</style>

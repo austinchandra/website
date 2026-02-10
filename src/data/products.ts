@@ -1,8 +1,8 @@
 type Base = "hoodie" | "crewneck";
 
 export const bases: Record<Base, { name: string; price: string }> = {
-  hoodie: { name: "Hoodie", price: "$60" },
-  crewneck: { name: "Crewneck", price: "$55" },
+  hoodie: { name: "Hooded", price: "$60" },
+  crewneck: { name: "Crew", price: "$55" },
 };
 
 type Product = { slug: string; title: string; base: Base; description: string };

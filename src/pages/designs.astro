@@ -1,16 +1,17 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import ProductText from '../components/ProductText.astro';
 import { bases, products } from '../data/products';
 ---
 
-<Layout title="Design" description="The artist is mightier than the soldier, for art scales where war does not, and he who changes hearts and minds shapes the world.">
+<Layout title="Designs" description="The artist is mightier than the soldier, for art scales where war does not, and he who changes hearts and minds shapes the world.">
   <div class="products">
     {products.map((product) => (
       <div class="product">
-        <a href={`/design/${product.slug}`}>
+        <a href={`/designs/${product.slug}`}>
           <div class="product-image"></div>
         </a>
-        <p class="product-text"><strong>{product.title}</strong><br>{bases[product.base].name} — <i>{bases[product.base].price}</i></p>
+        <ProductText class="product-text" title={product.title} baseName={bases[product.base].name} price={bases[product.base].price} />
       </div>
     ))}
   </div>
@@ -36,8 +37,8 @@ import { bases, products } from '../data/products';
     background: #eee;
   }
 
-  .product-text {
-    margin: 12px 0;
+  .product :global(.product-text) {
+    margin-top: 24px;
   }
 
   /* Two Products per Row, Width : Margin in Golden Ratio. */
