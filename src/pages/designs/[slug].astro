@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import Layout from '../../layouts/Layout.astro';
 import Button from '../../components/Button.astro';
 import ProductControls from '../../components/ProductControls.astro';
@@ -13,23 +14,36 @@ export function getStaticPaths() {
 
 const { product } = Astro.props;
 const base = bases[product.base];
+const { default: productImage } = await import(`../../assets/designs/product/${product.slug}.jpeg`);
 ---
 
 <Layout title={product.title} description={`${product.title} — ${base.name}`}>
   <div class="product-container">
-    <div class="product-image"></div>
+    <Image src={productImage} alt={product.title} class="product-image" />
     <div class="product-info">
       <h2>{product.title}</h2>
       <p>{base.name} — <i>{base.price}</i></p>
       <p class="product-description">{product.description}</p>
       <ProductControls quantity={1} size="M" />
       <Button paddingX={18} class="add-button">Add</Button>
-      <p class="model-info">The model is a slim 5'8" and wears a M.</p>
+      <p class="model-info">The model is a slim 5'8" and wears a M. His brother, a sturdy 5'11", prefers the L, and his friend, a well-built 6'1", likes the XL.</p>
     </div>
   </div>
 </Layout>
 
 <style>
+  :root {
+    --product-image: 72.37vw;
+  }
+
+  @media (min-width: 768px) {
+    :root { --product-image: 38.20vw; }
+  }
+
+  @media (min-width: 1536px) {
+    :root { --product-image: 19.09vw; }
+  }
+
   .product-container {
     display: flex;
     flex-direction: column;
@@ -37,27 +51,15 @@ const base = bases[product.base];
   }
 
   .product-image {
-    width: 72.37vw;
-    height: 117.68vw;
+    width: var(--product-image);
+    height: auto;
     background: #eee;
-  }
-
-  @media (min-width: 768px) {
-    .product-image {
-      width: 38.20vw;
-      height: 61.81vw;
-    }
   }
 
   @media (min-width: 1536px) {
     .product-container {
       flex-direction: row;
-      gap: 7.29vw;
-    }
-
-    .product-image {
-      width: 19.09vw;
-      height: 30.89vw;
+      gap: calc(var(--product-image) / var(--phi) / var(--phi));
     }
   }
 

@@ -1,7 +1,10 @@
 ---
+import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import ProductText from '../components/ProductText.astro';
 import { bases, products } from '../data/products';
+
+const images = import.meta.glob<{ default: ImageMetadata }>('../assets/designs/showcase/*.{jpg,jpeg}', { eager: true });
 ---
 
 <Layout title="Designs" description="The artist is mightier than the soldier, for art scales where war does not, and he who changes hearts and minds shapes the world.">
@@ -9,7 +12,7 @@ import { bases, products } from '../data/products';
     {products.map((product) => (
       <div class="product">
         <a href={`/designs/${product.slug}`}>
-          <div class="product-image"></div>
+          <Image src={images[`../assets/designs/showcase/${product.slug}.jpeg`]?.default} alt={product.title} class="product-image" />
         </a>
         <ProductText class="product-text" title={product.title} baseName={bases[product.base].name} price={bases[product.base].price} />
       </div>
@@ -18,22 +21,28 @@ import { bases, products } from '../data/products';
 </Layout>
 
 <style>
-  /* One Product per Row, Width : Content in Golden Ratio. */
+  /* Size : Right Margin : Bottom Margin in the Golden Ratio. */
+  :root {
+    --showcase-base: 44.73vw;
+    --showcase-margin: calc(var(--showcase-base) / var(--phi));
+    --showcase-gap: calc(var(--showcase-base) / var(--phi) / var(--phi));
+  }
+
   .products {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    column-gap: 27.68vw;
-    row-gap: 17.09vw;
+    column-gap: var(--showcase-margin);
+    row-gap: var(--showcase-gap);
   }
 
   .product {
-    width: 44.73vw;
+    width: var(--showcase-base);
   }
 
   .product-image {
     width: 100%;
-    height: 44.73vw;
+    height: var(--showcase-base);
     background: #eee;
   }
 
@@ -41,51 +50,18 @@ import { bases, products } from '../data/products';
     margin-top: 24px;
   }
 
-  /* Two Products per Row, Width : Margin in Golden Ratio. */
+  /* Two Products per Row */
   @media (min-width: 768px) {
-    .products {
-      column-gap: 14.59vw;
-      row-gap: 9.02vw;
-    }
-
-    .product {
-      width: 23.61vw;
-    }
-
-    .product-image {
-      height: 23.61vw;
-    }
+    :root { --showcase-base: 23.61vw; }
   }
 
   /* Two Products per Row */
   @media (min-width: 1024px) {
-    .products {
-      column-gap: 11.80vw;
-      row-gap: 7.29vw;
-    }
-
-    .product {
-      width: 19.09vw;
-    }
-
-    .product-image {
-      height: 19.09vw;
-    }
+    :root { --showcase-base: 19.09vw; }
   }
 
   /* Three Products per Row */
   @media (min-width: 1536px) {
-    .products {
-      column-gap: 7.29vw;
-      row-gap: 4.51vw;
-    }
-
-    .product {
-      width: 11.80vw;
-    }
-
-    .product-image {
-      height: 11.80vw;
-    }
+    :root { --showcase-base: 11.80vw; }
   }
 </style>
