@@ -1,5 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import Button from '../../components/Button.astro';
+import ProductControls from '../../components/ProductControls.astro';
 import { bases, products } from '../../data/products';
 
 export function getStaticPaths() {
@@ -20,12 +22,8 @@ const base = bases[product.base];
       <h2>{product.title}</h2>
       <p>{base.name} — <i>{base.price}</i></p>
       <p class="product-description">{product.description}</p>
-      <div class="product-controls">
-        <button disabled>1</button>
-        <span>in</span>
-        <button disabled>M</button>
-      </div>
-      <button class="add-button" disabled>Add (Preview)</button>
+      <ProductControls quantity={1} size="M" />
+      <Button paddingX={18} class="add-button">Add</Button>
       <p class="model-info">The model is a slim 5'8" and wears a M.</p>
     </div>
   </div>
@@ -73,41 +71,8 @@ const base = bases[product.base];
     white-space: pre-line;
   }
 
-  .product-controls {
-    display: flex;
-    flex-direction: row;
-    gap: 12px;
-  }
-
-  .product-controls button {
-    background: none;
-    border: none;
-    padding: 0;
-    font: inherit;
-    color: inherit;
-    cursor: pointer;
-    text-decoration: underline;
-  }
-
-  .product-controls button:disabled {
-    color: #ccc;
-    cursor: default;
-  }
-
-  .add-button {
+  :global(.add-button) {
     margin-top: 24px;
-    background: var(--color-text);
-    color: var(--color-bg);
-    border: none;
-    border-radius: 4px;
-    padding: 4px 18px;
-    font: inherit;
-    cursor: pointer;
-  }
-
-  .add-button:disabled {
-    background: #ccc;
-    cursor: default;
   }
 
   .model-info {

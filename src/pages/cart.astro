@@ -1,0 +1,62 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Button from '../components/Button.astro';
+import ProductControls from '../components/ProductControls.astro';
+import ProductText from '../components/ProductText.astro';
+import { bases, products } from '../data/products';
+
+// For now, hardcoded cart items (quantity, size, product slug)
+const cartItems = [
+  { slug: "filler-1", quantity: 1, size: "M" },
+  { slug: "filler-2", quantity: 2, size: "L" },
+];
+---
+
+<Layout title="Cart" description="Let these pieces serve to guide you to higher truths and places unexplored!">
+  <div class="cart-items">
+    {cartItems.map((item) => {
+      const product = products.find((p) => p.slug === item.slug);
+      const base = bases[product.base];
+      return (
+        <div class="cart-item">
+          <div class="item-image"></div>
+          <div class="item-info">
+            <ProductText class="item-text" title={product.title} baseName={base.name} price={base.price} />
+            <div class="item-controls">
+              <ProductControls quantity={item.quantity} size={item.size} />
+            </div>
+          </div>
+        </div>
+      );
+    })}
+    <Button class="checkout-button">Checkout</Button>
+  </div>
+</Layout>
+
+<style>
+  .cart-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1.72vw;
+  }
+
+  .cart-item {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .item-image {
+    width: 4.51vw;
+    height: 4.51vw;
+    margin-right: 2.78vw;
+    background: #eee;
+  }
+
+  .item-controls {
+    margin-top: 24px;
+  }
+
+  :global(.checkout-button) {
+    width: 11.81vw;
+  }
+</style>
