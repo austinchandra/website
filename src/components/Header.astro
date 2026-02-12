@@ -18,7 +18,9 @@ const links = [
       </a>
     ))}
   </nav>
-  <Button href="/cart" paddingX={12} class={pathname === "/cart" ? "cart active" : "cart"}>0</Button>
+  {pathname.startsWith("/designs") && (
+    <Button href="/designs/cart" paddingX={12} class={pathname === "/designs/cart" ? "cart active" : "cart"}>0</Button>
+  )}
 </header>
 
 <style>
@@ -45,9 +47,20 @@ const links = [
     text-decoration: underline;
   }
 
+  /* Position the "Cart" icon in the bottom corner on mobile. */
   :global(.cart) {
     font-size: 21px;
     font-weight: bold;
+    position: fixed;
+    bottom: 12px;
+    right: 17.09vw;
+    z-index: 1;
+  }
+
+  @media (min-width: 768px) {
+    :global(.cart) {
+      position: static;
+    }
   }
 
   :global(.cart.active) {

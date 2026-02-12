@@ -1,12 +1,12 @@
 ---
 import { Image } from 'astro:assets';
-import Layout from '../layouts/Layout.astro';
-import Button from '../components/Button.astro';
-import ProductControls from '../components/ProductControls.astro';
-import ProductText from '../components/ProductText.astro';
-import { bases, products, getPrice } from '../data/products';
+import Layout from '../../layouts/Layout.astro';
+import Button from '../../components/Button.astro';
+import ProductControls from '../../components/ProductControls.astro';
+import ProductText from '../../components/ProductText.astro';
+import { bases, products, getPrice } from '../../data/products';
 
-const showcaseImages = import.meta.glob<{ default: ImageMetadata }>('../assets/designs/showcase/*.jpeg', { eager: true });
+const showcaseImages = import.meta.glob<{ default: ImageMetadata }>('../../assets/designs/showcase/*.jpeg', { eager: true });
 
 // For now, hardcoded cart items (quantity, size, product slug)
 const cartItems = [
@@ -29,7 +29,7 @@ const cartTotal = `$${cartItems.reduce((sum, item) => {
       return (
         <div class="cart-item">
           <a href={`/designs/${item.slug}`}>
-            <Image src={showcaseImages[`../assets/designs/showcase/${item.slug}.jpeg`]?.default} alt={product.title} class="item-image" />
+            <Image src={showcaseImages[`../../assets/designs/showcase/${item.slug}.jpeg`]?.default} alt={product.title} class="item-image" />
           </a>
           <div class="item-info">
             <ProductText class="item-text" title={product.title} baseName={base.name} price={totalPrice} />
