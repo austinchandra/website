@@ -13,32 +13,32 @@ export function getPrice(base: Base, quantity = 1): number {
 
 export const products: Product[] = [
   {
-    slug: "square-1",
-    title: "Square 1",
+    slug: "intellect",
+    title: "Intellect",
     base: "hooded",
     description: "I want to sit and ponder,\nhead heavy as a stone,\nuntil it rolls away.",
   },
   {
-    slug: "circle-1",
-    title: "Circle 1",
+    slug: "optimism",
+    title: "Optimism",
     base: "crew",
     description: "I want to melt into glass,\nfall with the sunlight,\nlight as a cloud.",
   },
   {
-    slug: "triangle-1",
-    title: "Triangle 1",
+    slug: "violence",
+    title: "Violence",
     base: "hooded",
     description: "I want to cut like a knife,\nsail across the sea,\nto lands unknown.",
   },
   {
-    slug: "square-2",
-    title: "Square 2",
+    slug: "seduction",
+    title: "Seduction",
     base: "crew",
     description: "I want to dive into water,\nswim a lazy circle,\ndrink deep of life.",
   },
   {
-    slug: "circle-2",
-    title: "Circle 2",
+    slug: "ambition",
+    title: "Ambition",
     base: "hooded",
     description: "I want to climb up trees,\nto lush, green canopy,\nwhere birds nest.",
   },
