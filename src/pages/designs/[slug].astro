@@ -20,8 +20,11 @@ const images = import.meta.glob<{ default: ImageMetadata }>('../../assets/design
 
 <Layout title={product.title} description={`${product.title} — ${base.name}`}>
   <div class="product-container">
-    <div class="product-image-wrapper">
-      <Image src={images[`../../assets/designs/product/${product.slug}.jpeg`]?.default} alt={product.title} class="product-image" />
+    <div class="product-image-section">
+      <div class="product-image-wrapper">
+        <Image src={images[`../../assets/designs/product/${product.slug}.jpeg`]?.default} alt={product.title} class="product-image" />
+      </div>
+      {product.adjusted && <p class="image-caption">Design is slightly larger than pictured.</p>}
     </div>
     <div class="product-info">
       <h2>{product.title}</h2>
@@ -74,6 +77,12 @@ const images = import.meta.glob<{ default: ImageMetadata }>('../../assets/design
   .product-image {
     width: var(--product-image);
     height: auto;
+  }
+
+  .image-caption {
+    margin-top: 12px;
+    width: var(--product-image);
+    font-style: italic;
   }
 
   @media (min-width: 1536px) {

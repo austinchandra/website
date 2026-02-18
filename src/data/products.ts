@@ -5,7 +5,7 @@ export const bases: Record<Base, { name: string; price: string }> = {
   crew: { name: "Crew", price: "$55" },
 };
 
-type Product = { slug: string; title: string; base: Base; description: string };
+type Product = { slug: string; title: string; base: Base; description: string; adjusted?: boolean };
 
 export function getPrice(base: Base, quantity = 1): number {
   return parseInt(bases[base].price.slice(1)) * quantity;
@@ -29,12 +29,14 @@ export const products: Product[] = [
     title: "Violence",
     base: "hooded",
     description: "I want to cut like a knife,\nsail across the sea,\nto lands unknown.",
+    adjusted: true,
   },
   {
     slug: "seduction",
     title: "Seduction",
     base: "crew",
     description: "I want to dive into water,\nswim a lazy circle,\ndrink deep of life.",
+    adjusted: true,
   },
   {
     slug: "ambition",
