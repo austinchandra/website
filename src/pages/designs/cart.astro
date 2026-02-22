@@ -1,51 +1,150 @@
 ---
-import { Image } from 'astro:assets';
+import { getImage } from 'astro:assets';
 import Layout from '../../layouts/Layout.astro';
 import Button from '../../components/Button.astro';
 import ProductControls from '../../components/ProductControls.astro';
-import ProductText from '../../components/ProductText.astro';
-import { bases, products, getPrice } from '../../data/products';
+import { products } from '../../data/products';
 
 const showcaseImages = import.meta.glob<{ default: ImageMetadata }>('../../assets/designs/showcase/*.jpeg', { eager: true });
 
-// For now, hardcoded cart items (quantity, size, product slug)
-const cartItems = [
-  { slug: "square-1", quantity: 1, size: "M" },
-  { slug: "circle-2", quantity: 2, size: "L" },
-];
-
-const cartTotal = `$${cartItems.reduce((sum, item) => {
-  const product = products.find((p) => p.slug === item.slug);
-  return sum + getPrice(product.base, item.quantity);
-}, 0)}`;
+const imageMap: Record<string, string> = Object.fromEntries(
+  await Promise.all(
+    products.map(async (p) => {
+      const raw = showcaseImages[`../../assets/designs/showcase/${p.slug}.jpeg`]?.default;
+      const img = await getImage({ src: raw });
+      return [p.slug, img.src];
+    })
+  )
+);
 ---
 
 <Layout title="Cart" description="Let these pieces serve to guide you to higher truths and places unexplored!">
+  <script id="cart-image-map" type="application/json" set:html={JSON.stringify(imageMap)}></script>
+  <template id="controls-tpl">
+    <div class="item-controls">
+      <ProductControls quantity={1} size="M" showRemove />
+    </div>
+  </template>
+  <p class="cart-empty" style="display: none">Your cart is empty.</p>
   <div class="cart-items">
-    {cartItems.map((item) => {
-      const product = products.find((p) => p.slug === item.slug);
-      const base = bases[product.base];
-      const totalPrice = `$${getPrice(product.base, item.quantity)}`;
-      return (
-        <div class="cart-item">
-          <a href={`/designs/${item.slug}`}>
-            <Image src={showcaseImages[`../../assets/designs/showcase/${item.slug}.jpeg`]?.default} alt={product.title} class="item-image" />
-          </a>
-          <div class="item-info">
-            <ProductText class="item-text" title={product.title} baseName={base.name} price={totalPrice} />
-            <div class="item-controls">
-              <ProductControls quantity={item.quantity} size={item.size} showRemove />
-            </div>
-          </div>
-        </div>
-      );
-    })}
-    <div class="cart-footer">
-      <p class="cart-total"><strong>Total</strong> — <i>{cartTotal}</i></p>
+    <div class="cart-list"></div>
+    <div class="cart-footer" style="display: none">
+      <p class="cart-total"><strong>Total</strong> — <i class="cart-total-value"></i></p>
       <Button class="checkout-button">Checkout</Button>
     </div>
   </div>
 </Layout>
+
+<script>
+  import { cartStore, setQuantity, setSize } from '../../lib/cart';
+  import { products, bases, getPrice } from '../../data/products';
+
+  const imageMap: Record<string, string> = JSON.parse(
+    document.getElementById('cart-image-map')!.textContent!
+  );
+
+  const controlsTpl = document.getElementById('controls-tpl') as HTMLTemplateElement;
+  const cartList = document.querySelector('.cart-list')!;
+  const cartEmpty = document.querySelector('.cart-empty') as HTMLElement;
+  const cartFooter = document.querySelector('.cart-footer') as HTMLElement;
+  const cartTotalValue = document.querySelector('.cart-total-value')!;
+
+  type ItemRefs = { div: HTMLElement; price: HTMLElement; qSelect: HTMLSelectElement };
+  const itemRefs = new Map<string, ItemRefs>();
+
+  cartStore.subscribe((items) => {
+    cartEmpty.style.display = items.length === 0 ? '' : 'none';
+    cartFooter.style.display = items.length === 0 ? 'none' : 'flex';
+
+    const sorted = [...items].sort((a, b) =>
+      products.findIndex((p) => p.slug === a.slug) - products.findIndex((p) => p.slug === b.slug)
+    );
+
+    const currentKeys = new Set(sorted.map((i) => `${i.slug}:${i.size}`));
+
+    let didChangeStructure = false;
+
+    for (const [key, { div }] of itemRefs) {
+      if (!currentKeys.has(key)) {
+        div.remove();
+        itemRefs.delete(key);
+        didChangeStructure = true;
+      }
+    }
+
+    let total = 0;
+
+    for (const item of sorted) {
+      const product = products.find((p) => p.slug === item.slug);
+      if (!product) continue;
+
+      const base = bases[product.base];
+      const itemPrice = getPrice(product.base, item.quantity);
+      total += itemPrice;
+
+      const key = `${item.slug}:${item.size}`;
+
+      if (itemRefs.has(key)) {
+        const { price, qSelect } = itemRefs.get(key)!;
+        price.textContent = `$${itemPrice}`;
+        qSelect.value = String(item.quantity);
+      } else {
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+
+        const link = document.createElement('a');
+        link.href = `/designs/${item.slug}`;
+
+        const img = document.createElement('img');
+        img.src = imageMap[item.slug];
+        img.alt = product.title;
+        img.className = 'item-image';
+        link.appendChild(img);
+
+        const info = document.createElement('div');
+        info.className = 'item-info';
+
+        const text = document.createElement('p');
+        text.className = 'item-text';
+
+        const strong = document.createElement('strong');
+        strong.textContent = product.title;
+        const br = document.createElement('br');
+        const price = document.createElement('i');
+        price.textContent = `$${itemPrice}`;
+        text.append(strong, br, `${base.name} — `, price);
+
+        const controls = controlsTpl.content.cloneNode(true) as DocumentFragment;
+        const [qSelect, sSelect] = controls.querySelectorAll<HTMLSelectElement>('select');
+        qSelect.value = String(item.quantity);
+        sSelect.value = item.size;
+
+        qSelect.addEventListener('change', () => {
+          setQuantity(item.slug, item.size, Number(qSelect.value));
+        });
+
+        sSelect.addEventListener('change', () => {
+          setSize(item.slug, item.size, sSelect.value);
+        });
+
+        info.append(text, controls);
+        div.append(link, info);
+        cartList.appendChild(div);
+        itemRefs.set(key, { div, price, qSelect });
+        didChangeStructure = true;
+      }
+    }
+
+    if (didChangeStructure) {
+      for (const item of sorted) {
+        const key = `${item.slug}:${item.size}`;
+        cartList.appendChild(itemRefs.get(key)!.div);
+      }
+    }
+
+    cartTotalValue.textContent = `$${total}`;
+  });
+</script>
 
 <style>
   /* Apply Inverse Golden Ratio Squared to Showcase.
@@ -59,25 +158,36 @@ const cartTotal = `$${cartItems.reduce((sum, item) => {
     --cart-checkout: calc(var(--cart-base) * var(--phi) * var(--phi));
   }
 
-  .cart-items {
+  /* Combine the styling for cart-items and cart-list, the former a parent of the latter,
+   * to enforce they use the same spacing and styling. */
+  .cart-items,
+  .cart-list {
     display: flex;
     flex-direction: column;
     gap: var(--cart-gap);
   }
 
-  .cart-item {
+  /* In this cart page, we duplicate the styling for some of the product elements, since
+   * here, we render client-side, and we cannot leverage Astro's server-side elements
+   * the same way. */
+  :global(.cart-item) {
     display: flex;
     flex-direction: row;
   }
 
-  .item-image {
+  :global(.item-image) {
     width: var(--cart-base);
     height: var(--cart-base);
     margin-right: var(--cart-margin);
     background: #eee;
+    object-fit: cover;
   }
 
-  .item-controls {
+  :global(.item-text) {
+    margin: 0;
+  }
+
+  :global(.item-controls) {
     margin-top: 24px;
   }
 

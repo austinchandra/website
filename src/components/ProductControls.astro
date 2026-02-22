@@ -1,15 +1,16 @@
 ---
+import { SIZES, QUANTITIES } from '../data/products';
 const { quantity, size, showRemove } = Astro.props;
 ---
 
 <div class="product-controls">
   <select value={quantity}>
     {showRemove && <option value="0">0</option>}
-    {[1, 2, 3, 4, 5].map((n) => <option value={n} selected={n === quantity}>{n}</option>)}
+    {QUANTITIES.map((n) => <option value={n} selected={n === quantity}>{n}</option>)}
   </select>
   <span>x</span>
   <select value={size}>
-    {["S", "M", "L", "XL", "2XL"].map((s) => <option value={s} selected={s === size}>{s}</option>)}
+    {SIZES.map((s) => <option value={s} selected={s === size}>{s}</option>)}
   </select>
 </div>
 

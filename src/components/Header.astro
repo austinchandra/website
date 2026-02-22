@@ -19,9 +19,25 @@ const links = [
     ))}
   </nav>
   {pathname.startsWith("/designs") && (
-    <Button href="/designs/cart" paddingX={12} class={pathname === "/designs/cart" ? "cart active" : "cart"}>0</Button>
+    <Button href="/designs/cart" paddingX={12} class={pathname === "/designs/cart" ? "cart active" : "cart"} hidden>0</Button>
   )}
 </header>
+
+<script>
+  import { cartStore } from '../lib/cart';
+
+  // Assumes there is only one 'cart' element on the page, and things may break if there are more.
+  const badge = document.querySelector('.cart');
+  if (badge) {
+    cartStore.subscribe((items) => {
+      badge.textContent = String(items.reduce((sum, item) => sum + item.quantity, 0));
+      // Render the button "visible," as it starts hidden, because we wish to first
+      // read the number of items from local storage. This avoids any jarring value
+      // updates on the client-side.
+      (badge as HTMLElement).style.visibility = '';
+    });
+  }
+</script>
 
 <style>
   header {

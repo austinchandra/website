@@ -1,3 +1,7 @@
+export const SIZES = ['S', 'M', 'L', 'XL', '2XL'] as const;
+export const QUANTITIES = [1, 2, 3, 4, 5] as const;
+export const MAX_QUANTITY = QUANTITIES[QUANTITIES.length - 1];
+
 type Base = "hooded" | "crew";
 
 export const bases: Record<Base, { name: string; price: string }> = {

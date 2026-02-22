@@ -19,7 +19,7 @@ const images = import.meta.glob<{ default: ImageMetadata }>('../../assets/design
 ---
 
 <Layout title={product.title} description={`${product.title} — ${base.name}`}>
-  <div class="product-container">
+  <div class="product-container" data-slug={product.slug}>
     <div class="product-image-section">
       <div class="product-image-wrapper">
         <Image src={images[`../../assets/designs/product/${product.slug}.jpeg`]?.default} alt={product.title} class="product-image" />
@@ -38,15 +38,72 @@ const images = import.meta.glob<{ default: ImageMetadata }>('../../assets/design
 </Layout>
 
 <script>
-  const button = document.querySelector('.add-button');
-  button?.addEventListener('click', () => {
-    if (button.classList.contains('added')) return;
-    button.textContent = 'Added';
-    button.classList.add('added');
-    setTimeout(() => {
+  import { addToCart, cartStore } from '../../lib/cart';
+  import { MAX_QUANTITY } from '../../data/products';
+
+  const ADDED_CLASS = 'added';
+  const ADDED_ALL_CLASS = 'added-all';
+
+  const container = document.querySelector('.product-container') as HTMLElement;
+  const button = document.querySelector('.add-button') as HTMLButtonElement;
+  const selects = document.querySelectorAll<HTMLSelectElement>('.product-controls select');
+  const quantitySelect = selects[0];
+  const sizeSelect = selects[1];
+
+  const slug = container.dataset.slug!;
+
+  function updateControls() {
+    const existing = cartStore.get().find((i) => i.slug === slug && i.size === sizeSelect.value);
+    const remaining = MAX_QUANTITY - (existing?.quantity ?? 0);
+    const currentQty = Number(quantitySelect.value) || 1;
+
+    quantitySelect.innerHTML = '';
+    for (let n = 1; n <= remaining; n++) {
+      const option = document.createElement('option');
+      option.value = String(n);
+      option.textContent = String(n);
+      option.selected = n === Math.min(currentQty, remaining);
+      quantitySelect.appendChild(option);
+    }
+    if (remaining <= 0) {
+      const placeholder = document.createElement('option');
+      placeholder.value = '0';
+      placeholder.textContent = '0';
+      quantitySelect.appendChild(placeholder);
+    }
+    quantitySelect.disabled = remaining <= 0;
+
+    if (remaining <= 0) {
+      button.textContent = 'Added All';
+      button.classList.add(ADDED_CLASS);
+      button.classList.add(ADDED_ALL_CLASS);
+    } else if (button.classList.contains(ADDED_ALL_CLASS)) {
       button.textContent = 'Add';
-      button.classList.remove('added');
-    }, 2000);
+      button.classList.remove(ADDED_CLASS);
+      button.classList.remove(ADDED_ALL_CLASS);
+    }
+  }
+
+  cartStore.subscribe(updateControls);
+  sizeSelect.addEventListener('change', updateControls);
+
+  button.addEventListener('click', () => {
+    if (button.classList.contains(ADDED_CLASS)) return;
+    addToCart({
+      slug,
+      quantity: Number(quantitySelect.value),
+      size: sizeSelect.value,
+    });
+    if (!button.classList.contains(ADDED_ALL_CLASS)) {
+      button.textContent = 'Added';
+      button.classList.add(ADDED_CLASS);
+      setTimeout(() => {
+        if (!button.classList.contains(ADDED_ALL_CLASS)) {
+          button.textContent = 'Add';
+          button.classList.remove(ADDED_CLASS);
+        }
+      }, 2000);
+    }
   });
 </script>
 
