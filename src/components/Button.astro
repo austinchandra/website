@@ -1,14 +1,15 @@
 ---
-const { paddingX = 12, href, disabled, hidden, class: className } = Astro.props;
+const { paddingX = 12, href, disabled, hidden, passiveText, class: className } = Astro.props;
 const Element = href ? 'a' : 'button';
 ---
 
-<Element href={disabled ? undefined : href} disabled={disabled} class:list={["button", className, { disabled }]} style={`padding: 4px ${paddingX}px;${hidden ? ' visibility: hidden;' : ''}`}>
+<Element href={disabled ? undefined : href} disabled={disabled} class:list={["button", className, { disabled, hidden }]} style={`--padding-x: ${paddingX}px`} data-passive-text={passiveText}>
   <slot />
 </Element>
 
 <style>
   .button {
+    padding: 4px var(--padding-x);
     background: var(--color-text);
     color: var(--color-bg);
     border: none;
@@ -18,8 +19,21 @@ const Element = href ? 'a' : 'button';
     text-decoration: none;
   }
 
+  .button.hidden {
+    visibility: hidden;
+  }
+
   .button.disabled {
     background: var(--color-disabled);
+    cursor: default;
+  }
+
+  :global(.button.passive) {
+    background: var(--color-bg);
+    color: var(--color-text);
+    border: none;
+    outline: 1px solid var(--color-text);
+    outline-offset: -1px;
     cursor: default;
   }
 </style>

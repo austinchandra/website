@@ -34,7 +34,7 @@ const links = [
       // Render the button "visible," as it starts hidden, because we wish to first
       // read the number of items from local storage. This avoids any jarring value
       // updates on the client-side.
-      (badge as HTMLElement).style.visibility = '';
+      badge.classList.remove('hidden');
     });
   }
 </script>

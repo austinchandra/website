@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import Layout from '../../layouts/Layout.astro';
 import Button from '../../components/Button.astro';
+import PageHeader from '../../components/PageHeader.astro';
 import ProductControls from '../../components/ProductControls.astro';
 import { bases, products } from '../../data/products';
 
@@ -27,7 +28,7 @@ const images = import.meta.glob<{ default: ImageMetadata }>('../../assets/design
       {product.adjusted && <p class="image-caption">Design is slightly larger than pictured.</p>}
     </div>
     <div class="product-info">
-      <h2>{product.title}</h2>
+      <PageHeader title={product.title} />
       <p>{base.name} — <i>{base.price}</i></p>
       <p class="product-description">{product.description}</p>
       <ProductControls quantity={1} size="M" />
@@ -41,7 +42,7 @@ const images = import.meta.glob<{ default: ImageMetadata }>('../../assets/design
   import { addToCart, cartStore } from '../../lib/cart';
   import { MAX_QUANTITY } from '../../data/products';
 
-  const ADDED_CLASS = 'added';
+  const ADDED_CLASS = 'passive';
   const ADDED_ALL_CLASS = 'added-all';
 
   const container = document.querySelector('.product-container') as HTMLElement;
@@ -149,10 +150,6 @@ const images = import.meta.glob<{ default: ImageMetadata }>('../../assets/design
     }
   }
 
-  .product-info h2 {
-    margin-top: 0;
-  }
-
   .product-description {
     margin-top: 24px;
     margin-bottom: 48px;
@@ -161,15 +158,6 @@ const images = import.meta.glob<{ default: ImageMetadata }>('../../assets/design
 
   :global(.add-button) {
     margin-top: 24px;
-  }
-
-  :global(.add-button.added) {
-    background: var(--color-bg);
-    color: var(--color-text);
-    border: none;
-    outline: 1px solid var(--color-text);
-    outline-offset: -1px;
-    cursor: default;
   }
 
   .model-info {
