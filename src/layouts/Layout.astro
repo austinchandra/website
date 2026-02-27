@@ -1,7 +1,7 @@
 ---
 import Header from '../components/Header.astro';
 
-const { title = "AC", description } = Astro.props;
+const { title = "AC", description, footerLink } = Astro.props;
 ---
 
 <html lang="en">
@@ -23,6 +23,9 @@ const { title = "AC", description } = Astro.props;
         --color-bg: #fdfdfd;
         --color-text: #080808;
         --color-disabled: #aaa;
+
+        /* Use to Cover Rounding */
+        --vw-padding: 0.01vw;
 
         /* The Base "Top" Margin */
         --margin-base: 6.53vw;
@@ -49,6 +52,15 @@ const { title = "AC", description } = Astro.props;
         width:        calc(var(--margin-base) * var(--phi-5));
       }
 
+      .site-footer {
+        margin-top: var(--showcase-gap);
+      }
+
+      .site-footer a {
+        text-decoration: underline;
+        color: inherit;
+      }
+
       /* Top : Left : Right in Golden Ratio */
       /* Width : Left in Golden Ratio^3 */
       @media (min-width: 768px) {
@@ -70,6 +82,11 @@ const { title = "AC", description } = Astro.props;
         <Header />
       </div>
       <slot />
+      {footerLink && (
+        <footer class="site-footer">
+          <a href={footerLink.href}>{footerLink.label}</a>
+        </footer>
+      )}
     </main>
   </body>
 </html>

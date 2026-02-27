@@ -7,7 +7,7 @@ import { bases, products } from '../data/products';
 const images = import.meta.glob<{ default: ImageMetadata }>('../assets/designs/showcase/*.{jpg,jpeg}', { eager: true });
 ---
 
-<Layout title="Designs" description="The artist is mightier than the soldier, for art scales where war does not, and he who changes hearts and minds shapes the world.">
+<Layout title="Designs" description="The artist is mightier than the soldier, for art scales where war does not, and he who changes hearts and minds shapes the world." footerLink={{ href: "/designs/orders", label: "Orders" }}>
   <div class="products">
     {products.map((product) => (
       <div class="product">
@@ -23,7 +23,7 @@ const images = import.meta.glob<{ default: ImageMetadata }>('../assets/designs/s
 <style>
   /* Size : Right Margin : Bottom Margin in the Golden Ratio. */
   :root {
-    --showcase-base: 44.73vw;
+    --showcase-base: calc(var(--margin-base) * var(--phi-4) - var(--vw-padding));
     --showcase-margin: calc(var(--showcase-base) / var(--phi));
     --showcase-gap: calc(var(--showcase-base) / var(--phi) / var(--phi));
   }
@@ -52,16 +52,16 @@ const images = import.meta.glob<{ default: ImageMetadata }>('../assets/designs/s
 
   /* Two Products per Row */
   @media (min-width: 768px) {
-    :root { --showcase-base: 23.61vw; }
+    :root { --showcase-base: calc(var(--margin-base) * var(--phi-2) - var(--vw-padding)); }
   }
 
   /* Two Products per Row */
   @media (min-width: 1024px) {
-    :root { --showcase-base: 19.09vw; }
+    :root { --showcase-base: calc(var(--margin-base) * var(--phi) - var(--vw-padding)); }
   }
 
   /* Three Products per Row */
   @media (min-width: 1536px) {
-    :root { --showcase-base: 11.80vw; }
+    :root { --showcase-base: calc(var(--margin-base) - var(--vw-padding)); }
   }
 </style>
