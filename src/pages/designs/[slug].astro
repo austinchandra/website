@@ -1,0 +1,82 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../../layouts/Layout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import { bases, products } from '../../data/products';
+
+export function getStaticPaths() {
+  return products.map((product) => ({
+    params: { slug: product.slug },
+    props: { product },
+  }));
+}
+
+const { product } = Astro.props;
+const base = bases[product.base];
+// Load all images using static path and cache across page loads.
+const images = import.meta.glob<{ default: ImageMetadata }>('../../assets/designs/product/*.jpeg', { eager: true });
+---
+
+<Layout title={product.title} description={`${product.title} — ${base.name}`}>
+  <div class="product-container">
+    <div class="product-image-section">
+      <div class="product-image-wrapper">
+        <Image src={images[`../../assets/designs/product/${product.slug}.jpeg`]?.default} alt={product.title} class="product-image" />
+      </div>
+      {product.adjusted && <p class="image-caption">Design is slightly larger than pictured.</p>}
+    </div>
+    <div class="product-info">
+      <PageHeader title={product.title} />
+      <p>{base.name}</p>
+      <p class="product-description">{product.description}</p>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  :root {
+    --product-image: 72.37vw;
+  }
+
+  @media (min-width: 768px) {
+    :root { --product-image: 38.20vw; }
+  }
+
+  @media (min-width: 1536px) {
+    :root { --product-image: 19.09vw; }
+  }
+
+  .product-container {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+
+  .product-image-wrapper {
+    width: var(--product-image);
+    aspect-ratio: 3 / 4;
+  }
+
+  .product-image {
+    width: var(--product-image);
+    height: auto;
+  }
+
+  .image-caption {
+    margin-top: 12px;
+    width: var(--product-image);
+    font-style: italic;
+  }
+
+  @media (min-width: 1536px) {
+    .product-container {
+      flex-direction: row;
+      gap: calc(var(--product-image) / var(--phi) / var(--phi));
+    }
+  }
+
+  .product-description {
+    margin-top: 24px;
+    white-space: pre-line;
+  }
+</style>

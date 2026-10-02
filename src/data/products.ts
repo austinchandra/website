@@ -1,0 +1,43 @@
+type Base = "hooded" | "crew";
+
+export const bases: Record<Base, { name: string }> = {
+  hooded: { name: "Hooded" },
+  crew: { name: "Crew" },
+};
+
+type Product = { slug: string; title: string; base: Base; description: string; adjusted?: boolean };
+
+export const products: Product[] = [
+  {
+    slug: "intellect",
+    title: "Intellect",
+    base: "hooded",
+    description: "I want to sit and ponder,\nhead heavy as a stone,\nuntil it rolls away.",
+  },
+  {
+    slug: "optimism",
+    title: "Optimism",
+    base: "crew",
+    description: "I want to melt into glass,\nfall with the sunlight,\nlight as a cloud.",
+  },
+  {
+    slug: "violence",
+    title: "Violence",
+    base: "hooded",
+    description: "I want to cut like a knife,\nsail across the sea,\nto lands unknown.",
+    adjusted: true,
+  },
+  {
+    slug: "seduction",
+    title: "Seduction",
+    base: "crew",
+    description: "I want to dive into water,\nswim a lazy circle,\ndrink deep of life.",
+    adjusted: true,
+  },
+  {
+    slug: "ambition",
+    title: "Ambition",
+    base: "hooded",
+    description: "I want to climb up trees,\nto lush, green canopy,\nwhere birds nest.",
+  },
+];

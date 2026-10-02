@@ -1,0 +1,11 @@
+---
+const { title, baseName, class: className } = Astro.props;
+---
+
+<p class={className}><strong>{title}</strong><br>{baseName}</p>
+
+<style>
+  p {
+    margin: 0;
+  }
+</style>
