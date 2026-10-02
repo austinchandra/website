@@ -1,19 +1,11 @@
-export const SIZES = ['S', 'M', 'L', 'XL', '2XL'] as const;
-export const QUANTITIES = [1, 2, 3, 4, 5] as const;
-export const MAX_QUANTITY = QUANTITIES[QUANTITIES.length - 1];
-
 type Base = "hooded" | "crew";
 
-export const bases: Record<Base, { name: string; price: string }> = {
-  hooded: { name: "Hooded", price: "$60" },
-  crew: { name: "Crew", price: "$55" },
+export const bases: Record<Base, { name: string }> = {
+  hooded: { name: "Hooded" },
+  crew: { name: "Crew" },
 };
 
 type Product = { slug: string; title: string; base: Base; description: string; adjusted?: boolean };
-
-export function getPrice(base: Base, quantity = 1): number {
-  return parseInt(bases[base].price.slice(1)) * quantity;
-}
 
 export const products: Product[] = [
   {
