@@ -1,4 +1,6 @@
 ---
+import Button from './Button.astro';
+
 const pathname = Astro.url.pathname === '/' ? '/' : Astro.url.pathname.replace(/\/$/, '');
 
 const links = [
@@ -16,7 +18,26 @@ const links = [
       </a>
     ))}
   </nav>
+  {pathname.startsWith("/designs") && (
+    <Button href="/designs/cart" paddingX={12} class={pathname === "/designs/cart" ? "cart active" : "cart"} hidden>0</Button>
+  )}
 </header>
+
+<script>
+  import { cartStore } from '../lib/cart';
+
+  // Assumes there is only one 'cart' element on the page, and things may break if there are more.
+  const badge = document.querySelector('.cart');
+  if (badge) {
+    cartStore.subscribe((items) => {
+      badge.textContent = String(items.reduce((sum, item) => sum + item.quantity, 0));
+      // Render the button "visible," as it starts hidden, because we wish to first
+      // read the number of items from local storage. This avoids any jarring value
+      // updates on the client-side.
+      badge.classList.remove('hidden');
+    });
+  }
+</script>
 
 <style>
   header {
@@ -39,6 +60,26 @@ const links = [
   }
 
   a.active {
+    text-decoration: underline;
+  }
+
+  /* Position the "Cart" icon in the bottom corner on mobile. */
+  :global(.cart) {
+    font-size: 21px;
+    font-weight: bold;
+    position: fixed;
+    bottom: 12px;
+    right: 17.09vw;
+    z-index: 1;
+  }
+
+  @media (min-width: 768px) {
+    :global(.cart) {
+      position: static;
+    }
+  }
+
+  :global(.cart.active) {
     text-decoration: underline;
   }
 </style>

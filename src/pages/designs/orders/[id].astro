@@ -1,0 +1,47 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import PageHeader from '../../../components/PageHeader.astro';
+
+type OrderStatus = 'Delivered' | 'Shipped' | 'Processing';
+
+type Order = {
+  id: string;
+  status: OrderStatus;
+  receipt: string;
+  tracking?: string;
+};
+
+export function getStaticPaths() {
+  const orders: Order[] = [
+    { id: '1', status: 'Delivered', receipt: '#', tracking: '#' },
+  ];
+  return orders.map((order) => ({
+    params: { id: order.id },
+    props: { order },
+  }));
+}
+
+const { order } = Astro.props;
+---
+
+<Layout title={`Order #${order.id}`}>
+  <PageHeader title={`Order #${order.id} — ${order.status}`} />
+  <div class="links">
+    <a href={order.receipt}>Receipt</a>
+    {order.tracking && <a href={order.tracking}>Tracking Link</a>}
+  </div>
+</Layout>
+
+<style>
+  .links {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  a {
+    text-decoration: underline;
+    color: inherit;
+  }
+</style>

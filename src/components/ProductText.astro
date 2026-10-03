@@ -1,8 +1,8 @@
 ---
-const { title, baseName, class: className } = Astro.props;
+const { title, baseName, price, class: className } = Astro.props;
 ---
 
-<p class={className}><strong>{title}</strong><br>{baseName}</p>
+<p class={className}><strong>{title}</strong><br>{baseName} — <i>{price}</i></p>
 
 <style>
   p {
